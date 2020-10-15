@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Moneygement</string>
+    <string name="title_activity_splash_screnn">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="splash_title">Hello there!</string>
 </resources>
