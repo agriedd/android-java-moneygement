@@ -42,6 +42,8 @@ perancangan tabel database dalam aplikasi ini
 #### Laporan 🧾
 laporan berupa file export dan tampilan chart pada activity
 
+### Dokumentasi 🎉
+#### [Init Awal](docs/0001%20-%20init.md")
 
 ### Anggota 🔥
 
