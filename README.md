@@ -38,7 +38,7 @@ perancangan tabel database dalam aplikasi ini
   2. pengeluaran
   3. hutang
   4. piutang
-  5. wishlist activity
+  5. wishlist
 #### Laporan 🧾
 laporan berupa file export dan tampilan chart pada activity
 
