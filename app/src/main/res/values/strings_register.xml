@@ -3,5 +3,7 @@
     <string name="field_your_name">Nama Anda</string>
     <string name="register_info_card">Kami perlu mengetahui nama Anda</string>
     <string name="quit">Keluar</string>
+    <string name="close">Tutup</string>
+    <string name="save">Save</string>
     <string name="register">Mendaftar</string>
 </resources>

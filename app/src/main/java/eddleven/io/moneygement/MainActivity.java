@@ -2,18 +2,13 @@ package eddleven.io.moneygement;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import eddleven.io.moneygement.configs.Preference;
 import eddleven.io.moneygement.dialogs.RegisterUserDialog;
-import eddleven.io.moneygement.models.DaoSession;
-import eddleven.io.moneygement.models.PemasukanDao;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
@@ -22,19 +17,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Boolean mStatusBackPressed = false;
     private final Handler mHandlerBackPressed = new Handler();
-    private PemasukanDao pemasukanDao;
-    private DaoSession daoSession;
-    private LinearLayout containerMainActivity;
     private MaterialButton quit, register, registerPrimary;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.containerMainActivity = (LinearLayout) findViewById(R.id.container_main_activity);
-        this.quit = (MaterialButton) findViewById(R.id.quit);
-        this.register = (MaterialButton) findViewById(R.id.register);
-        this.registerPrimary = (MaterialButton) findViewById(R.id.register_primary);
+        this.checkUserSession();
+        this.quit = findViewById(R.id.quit);
+        this.register = findViewById(R.id.register);
+        this.registerPrimary = findViewById(R.id.register_primary);
         this.quit.setOnClickListener(this);
         this.register.setOnClickListener(this);
         this.registerPrimary.setOnClickListener(this);
@@ -72,28 +65,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      *
      */
     public void checkUserSession(){
-
+        if(this.registerUser()){
+            this.skipActivity();
+        }
     }
 
     public boolean registerUser(){
-        return false;
+        return Preference.isNameSet(this);
     }
 
-    public boolean skipActivity(){
+    public void skipActivity(){
         this.startMainActivity();
-        return true;
     }
     public void startMainActivity(){
-        startActivity(new Intent(this, ActivityUtama.class));
+        startActivity(new Intent(getApplicationContext(), ActivityUtama.class));
     }
 
     @Override
     public void onClick(View v) {
-        if(v == (View) this.quit){
+        if(v == this.quit){
             Toast.makeText(this, "See you...", Toast.LENGTH_SHORT).show();
             this.finish();
-        } else if(v == (View) this.register || v == (View) this.registerPrimary){
+        } else if(v == this.register || v == this.registerPrimary){
             this.showDialogRegisterUser();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(this.registerUser()){
+            finish();
         }
     }
 }

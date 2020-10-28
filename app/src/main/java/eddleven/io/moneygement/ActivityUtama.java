@@ -1,8 +1,10 @@
 package eddleven.io.moneygement;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -19,6 +21,9 @@ import androidx.appcompat.widget.Toolbar;
 public class ActivityUtama extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+
+    private Boolean mStatusBackPressed = false;
+    private final Handler mHandlerBackPressed = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,5 +64,21 @@ public class ActivityUtama extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(!this.mStatusBackPressed){
+            this.mStatusBackPressed = true;
+            Toast.makeText(this, "Tekan Kembali Sekali Lagi", Toast.LENGTH_SHORT).show();
+            this.mHandlerBackPressed.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mStatusBackPressed = false;
+                }
+            }, 2000);
+        } else {
+            super.onBackPressed();
+        }
     }
 }
