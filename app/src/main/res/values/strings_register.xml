@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="field_your_name">Nama Anda</string>
+    <string name="register_info_card">Kami perlu mengetahui nama Anda</string>
+    <string name="quit">Keluar</string>
+    <string name="register">Mendaftar</string>
+</resources>

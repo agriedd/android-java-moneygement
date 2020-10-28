@@ -80,7 +80,7 @@ public class SplashScreen extends AppCompatActivity {
             public void run() {
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
-        }, 1000*5);
+        }, 1000);
     }
 
     @Override
