@@ -8,7 +8,7 @@ import eddleven.io.moneygement.models.DaoMaster;
 import eddleven.io.moneygement.models.DaoSession;
 
 public class App extends Application {
-    private DaoSession daoSession;
+    public static DaoSession daoSession;
 
     @Override
     public void onCreate() {
