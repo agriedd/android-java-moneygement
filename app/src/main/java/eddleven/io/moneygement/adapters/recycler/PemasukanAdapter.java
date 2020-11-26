@@ -1,11 +1,14 @@
 package eddleven.io.moneygement.adapters.recycler;
 
 import android.content.Context;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -27,7 +30,7 @@ public class PemasukanAdapter extends RecyclerView.Adapter<PemasukanAdapter.view
         this.setList(pemasukanList);
     }
 
-    private void setList(List<Pemasukan> pemasukanList) {
+    public void setList(List<Pemasukan> pemasukanList) {
         if(pemasukanList.size() >= 1){
             Pemasukan pemasukan = new Pemasukan();
             pemasukanList.add(pemasukan);
@@ -44,7 +47,7 @@ public class PemasukanAdapter extends RecyclerView.Adapter<PemasukanAdapter.view
         } else {
             view = LayoutInflater.from(this.context).inflate(R.layout.message_from_bottom, parent, false);
         }
-        return new viewHolder(view);
+        return new viewHolder(view, context);
     }
 
     @Override
@@ -64,12 +67,17 @@ public class PemasukanAdapter extends RecyclerView.Adapter<PemasukanAdapter.view
         return this.pemasukanList.size();
     }
 
-    public static class viewHolder extends RecyclerView.ViewHolder {
-        public viewHolder(@NonNull View itemView) {
+    public static class viewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
+        private Pemasukan pemasukan;
+        private Context context;
+        public viewHolder(@NonNull View itemView, Context context) {
             super(itemView);
+            this.context = context;
         }
 
         public void bind(int position, Pemasukan pemasukan) {
+            this.pemasukan = pemasukan;
+            itemView.setOnCreateContextMenuListener(this);
             FloatingActionButton color = itemView.findViewById(R.id.item_kategori_color);
             TextView title = itemView.findViewById(R.id.item_nominal);
             TextView subtitle = itemView.findViewById(R.id.item_subtitle);
@@ -77,6 +85,19 @@ public class PemasukanAdapter extends RecyclerView.Adapter<PemasukanAdapter.view
             title.setText("Rp." + pemasukan.getNominal() + ",-");
             subtitle.setText(pemasukan.getKeterangan().toString());
             date.setText("Tanggal: " + pemasukan.getTanggal().toString());
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.setHeaderTitle("Aksi untuk Item #" + pemasukan.getId());
+            menu.add(0, v.getId(), 0, "Ubah").setOnMenuItemClickListener(this);
+            menu.add(0, v.getId(), 0, "Hapus").setOnMenuItemClickListener(this);
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            Toast.makeText(context, pemasukan.getId().toString(), Toast.LENGTH_SHORT).show();
+            return true;
         }
     }
 }
