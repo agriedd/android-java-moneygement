@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import eddleven.io.moneygement.App;
 import eddleven.io.moneygement.R;
 import eddleven.io.moneygement.adapters.recycler.PemasukanAdapter;
+import eddleven.io.moneygement.configs.Preference;
 import eddleven.io.moneygement.dialogs.RegisterUserDialog;
 import eddleven.io.moneygement.dialogs.TambahPemasukanDialog;
 import eddleven.io.moneygement.models.DaoSession;
@@ -45,7 +46,7 @@ public class PemasukanFragment extends Fragment implements View.OnClickListener 
     private List<Pemasukan> listPemasukan = new ArrayList<Pemasukan>();
     FloatingActionButton tambah;
     View root;
-    TextView totalPemasukan;
+    TextView totalPemasukan, pesanPemasukan;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -93,10 +94,13 @@ public class PemasukanFragment extends Fragment implements View.OnClickListener 
         Cursor cursor = pemasukanDao.getDatabase().rawQuery("SELECT SUM(`nominal`) as total FROM " + pemasukanDao.TABLENAME, new String[]{});
         cursor.moveToFirst();
         totalPemasukan.setText("Rp." + String.valueOf(cursor.getLong(0)) + ",-");
+
+
     }
 
     private void initDaftarPemasukan(View root) {
         totalPemasukan = root.findViewById(R.id.total_pemasukan);
+        pesanPemasukan = root.findViewById(R.id.pesan_pemasukan);
         tambah = root.findViewById(R.id.tambah_pemasukan);
         tambah.setOnClickListener(this);
 
@@ -115,6 +119,12 @@ public class PemasukanFragment extends Fragment implements View.OnClickListener 
         Cursor cursor = pemasukanDao.getDatabase().rawQuery("SELECT SUM(`nominal`) as total FROM " + pemasukanDao.TABLENAME, new String[]{});
         cursor.moveToFirst();
         totalPemasukan.setText("Rp." + String.valueOf(cursor.getLong(0)) + ",-");
+
+        Cursor cursor2 = pemasukanDao.getDatabase().rawQuery("SELECT SUM(`nominal`) as total FROM " + pemasukanDao.TABLENAME + " WHERE strftime('%Y', datetime(tanggal/1000, 'unixepoch')) = strftime('%Y',date('now')) AND strftime('%m', datetime(tanggal/1000, 'unixepoch')) = strftime('%m',date('now'))", new String[]{});
+        cursor2.moveToFirst();
+        String pemasukanBulanan = String.valueOf(cursor2.getLong(0));
+        String nama = Preference.getName(getContext());
+        pesanPemasukan.setText(nama + ", pemasukan Anda bulan ini: Rp." +  pemasukanBulanan + ",-");
     }
 
     public void activityResult(int requestCode, int resultCode, @Nullable Intent data) {
