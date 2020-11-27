@@ -40,7 +40,7 @@ import eddleven.io.moneygement.models.PemasukanDao;
 
 public class PemasukanFragment extends Fragment implements View.OnClickListener {
 
-    private PemasukanViewModel pemasukanViewModel;
+    public PemasukanViewModel pemasukanViewModel;
     private RecyclerView listPemasukanView;
     private PemasukanAdapter pemasukanAdapter;
     private List<Pemasukan> listPemasukan = new ArrayList<Pemasukan>();
@@ -53,10 +53,17 @@ public class PemasukanFragment extends Fragment implements View.OnClickListener 
         pemasukanViewModel =
                 ViewModelProviders.of(this).get(PemasukanViewModel.class);
         this.root = inflater.inflate(R.layout.fragment_pemasukan, container, false);
+
 //        final TextView textView = root.findViewById(R.id.text_pemasukan);
 
         this.initDaftarPemasukan(root);
-
+        pemasukanViewModel.getPemasukan().observe(getViewLifecycleOwner(), new Observer<List<Pemasukan>>() {
+            @Override
+            public void onChanged(List<Pemasukan> pemasukans) {
+                listPemasukan = pemasukans;
+                pemasukanAdapter.updateList(listPemasukan);
+            }
+        });
         pemasukanViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
@@ -94,8 +101,11 @@ public class PemasukanFragment extends Fragment implements View.OnClickListener 
         Cursor cursor = pemasukanDao.getDatabase().rawQuery("SELECT SUM(`nominal`) as total FROM " + pemasukanDao.TABLENAME, new String[]{});
         cursor.moveToFirst();
         totalPemasukan.setText("Rp." + String.valueOf(cursor.getLong(0)) + ",-");
+        this.pemasukanViewModel.populatePemasukan();
+    }
 
-
+    private void updateDataPemasukan(){
+        this.pemasukanViewModel.populatePemasukan();
     }
 
     private void initDaftarPemasukan(View root) {
@@ -105,11 +115,16 @@ public class PemasukanFragment extends Fragment implements View.OnClickListener 
         tambah.setOnClickListener(this);
 
         this.listPemasukanView = root.findViewById(R.id.daftar_pemasukan);
+
         DaoSession session = ((App) getActivity().getApplication()).getDaoSession();
         PemasukanDao pemasukanDao = session.getPemasukanDao();
 
-        this.listPemasukan = pemasukanDao.queryBuilder().orderDesc(PemasukanDao.Properties.Tanggal).list();
-        pemasukanAdapter = new PemasukanAdapter(getContext(), listPemasukan);
+        pemasukanAdapter = new PemasukanAdapter(getContext(), listPemasukan, new PemasukanAdapter.UpdateEvent() {
+            @Override
+            public void update() {
+                pemasukanViewModel.populatePemasukan();
+            }
+        });
         listPemasukanView.setHasFixedSize(false);
         DividerItemDecoration itemDecor = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
         listPemasukanView.addItemDecoration(itemDecor);
@@ -125,10 +140,6 @@ public class PemasukanFragment extends Fragment implements View.OnClickListener 
         String pemasukanBulanan = String.valueOf(cursor2.getLong(0));
         String nama = Preference.getName(getContext());
         pesanPemasukan.setText(nama + ", pemasukan Anda bulan ini: Rp." +  pemasukanBulanan + ",-");
-    }
-
-    public void activityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
     }
 
     @Override

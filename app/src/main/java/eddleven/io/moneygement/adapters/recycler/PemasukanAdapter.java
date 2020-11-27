@@ -1,33 +1,46 @@
 package eddleven.io.moneygement.adapters.recycler;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.Calendar;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
+import eddleven.io.moneygement.App;
 import eddleven.io.moneygement.R;
+import eddleven.io.moneygement.models.DaoSession;
 import eddleven.io.moneygement.models.Pemasukan;
+import eddleven.io.moneygement.models.PemasukanDao;
+import eddleven.io.moneygement.ui.pemasukan.PemasukanViewModel;
 
 public class PemasukanAdapter extends RecyclerView.Adapter<PemasukanAdapter.viewHolder> {
 
     private Context context;
     private List<Pemasukan> pemasukanList;
+    private UpdateEvent updateEvent;
+    public interface UpdateEvent{
+        public void update();
+    }
 
-    public PemasukanAdapter(Context context, List<Pemasukan> pemasukanList) {
+    public PemasukanAdapter(Context context, List<Pemasukan> pemasukanList, UpdateEvent updateEvent) {
         this.context = context;
         this.setList(pemasukanList);
+        this.updateEvent = updateEvent;
     }
 
     public void setList(List<Pemasukan> pemasukanList) {
@@ -47,7 +60,7 @@ public class PemasukanAdapter extends RecyclerView.Adapter<PemasukanAdapter.view
         } else {
             view = LayoutInflater.from(this.context).inflate(R.layout.message_from_bottom, parent, false);
         }
-        return new viewHolder(view, context);
+        return new viewHolder(view, context, updateEvent);
     }
 
     @Override
@@ -67,12 +80,24 @@ public class PemasukanAdapter extends RecyclerView.Adapter<PemasukanAdapter.view
         return this.pemasukanList.size();
     }
 
+    public void updateList(List<Pemasukan> listPemasukan) {
+        this.setList(listPemasukan);
+        this.notifyDataSetChanged();
+    }
+
+    public void setUpdateEvent(UpdateEvent updateEvent) {
+        this.updateEvent = updateEvent;
+    }
+
     public static class viewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
         private Pemasukan pemasukan;
         private Context context;
-        public viewHolder(@NonNull View itemView, Context context) {
+        public UpdateEvent updateEvent = null;
+
+        public viewHolder(@NonNull View itemView, Context context, @NotNull UpdateEvent updateEvent) {
             super(itemView);
             this.context = context;
+            this.updateEvent = updateEvent;
         }
 
         public void bind(int position, Pemasukan pemasukan) {
@@ -91,12 +116,23 @@ public class PemasukanAdapter extends RecyclerView.Adapter<PemasukanAdapter.view
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Aksi untuk Item #" + pemasukan.getId());
             menu.add(0, v.getId(), 0, "Ubah").setOnMenuItemClickListener(this);
-            menu.add(0, v.getId(), 0, "Hapus").setOnMenuItemClickListener(this);
+            menu.add(1, v.getId(), 0, "Hapus").setOnMenuItemClickListener(this);
         }
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-            Toast.makeText(context, pemasukan.getId().toString(), Toast.LENGTH_SHORT).show();
+            if(item.getGroupId() == 0){
+                Toast.makeText(context, "Ubah " + pemasukan.getId().toString(), Toast.LENGTH_SHORT).show();
+            } else {
+                FragmentActivity activity = (FragmentActivity) context;
+                DaoSession daoSession = ((App) activity.getApplication()).getDaoSession();
+                PemasukanDao pemasukanDao = daoSession.getPemasukanDao();
+                long id = pemasukan.getId();
+                Pemasukan pemasukan = pemasukanDao.loadByRowId(id);
+                pemasukanDao.delete(pemasukan);
+                Toast.makeText(context, "Data berhasil dihapus!", Toast.LENGTH_SHORT).show();
+                updateEvent.update();
+            }
             return true;
         }
     }
