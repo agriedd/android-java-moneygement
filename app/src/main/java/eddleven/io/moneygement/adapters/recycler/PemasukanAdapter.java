@@ -3,6 +3,7 @@ package eddleven.io.moneygement.adapters.recycler;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -13,16 +14,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import eddleven.io.moneygement.App;
 import eddleven.io.moneygement.R;
+import eddleven.io.moneygement.dialogs.TambahPemasukanDialog;
+import eddleven.io.moneygement.dialogs.UbahPemasukanDialog;
 import eddleven.io.moneygement.models.DaoSession;
 import eddleven.io.moneygement.models.Pemasukan;
 import eddleven.io.moneygement.models.PemasukanDao;
@@ -122,7 +127,20 @@ public class PemasukanAdapter extends RecyclerView.Adapter<PemasukanAdapter.view
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             if(item.getGroupId() == 0){
-                Toast.makeText(context, "Ubah " + pemasukan.getId().toString(), Toast.LENGTH_SHORT).show();
+                DialogFragment newFragment = new UbahPemasukanDialog(pemasukan.getId(), new UbahPemasukanDialog.UbahPemasukanInterface() {
+                    @Override
+                    public void setIntent(Intent intent) {
+                        if(intent.getBooleanExtra("status", false)){
+                            Toast.makeText(context, "Berhasil Menyimpan Pemasukan!", Toast.LENGTH_SHORT).show();
+                            updateEvent.update();
+                        } else {
+                            Toast.makeText(context, "Gagal Menyimpan Pemasukan!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                newFragment.setCancelable(false);
+                FragmentActivity activity = (FragmentActivity) context;
+                newFragment.show(activity.getSupportFragmentManager(), "ubahpemasukan");
             } else {
                 FragmentActivity activity = (FragmentActivity) context;
                 DaoSession daoSession = ((App) activity.getApplication()).getDaoSession();

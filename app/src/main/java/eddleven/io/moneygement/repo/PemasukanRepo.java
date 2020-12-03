@@ -28,4 +28,8 @@ public class PemasukanRepo {
                 .orderDesc(PemasukanDao.Properties.Tanggal)
                 .list();
     }
+    public static Pemasukan find(Application application, long id){
+        DaoSession daoSession = getDB(application);
+        return daoSession.getPemasukanDao().load(id);
+    }
 }
