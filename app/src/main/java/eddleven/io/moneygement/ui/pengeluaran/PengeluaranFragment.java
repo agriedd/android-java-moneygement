@@ -1,4 +1,4 @@
-package eddleven.io.moneygement.ui.slideshow;
+package eddleven.io.moneygement.ui.pengeluaran;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,20 +13,20 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import eddleven.io.moneygement.R;
 
-public class SlideshowFragment extends Fragment {
+public class PengeluaranFragment extends Fragment {
 
-    private SlideshowViewModel slideshowViewModel;
+    private PengeluaranViewModel pengeluaranViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        slideshowViewModel =
-                ViewModelProviders.of(this).get(SlideshowViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_slideshow, container, false);
-        final TextView textView = root.findViewById(R.id.text_slideshow);
-        slideshowViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        pengeluaranViewModel =
+                ViewModelProviders.of(this).get(PengeluaranViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_pengeluaran, container, false);
+//        final TextView textView = root.findViewById(R.id.text_pengeluaran);
+        pengeluaranViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+//                textView.setText(s);
             }
         });
         return root;

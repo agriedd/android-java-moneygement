@@ -14,5 +14,5 @@
 
     <string name="menu_home">Home</string>
     <string name="menu_pemasukan">Pemasukan</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_pengeluaran">Pengeluaran</string>
 </resources>

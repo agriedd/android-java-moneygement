@@ -1,16 +1,16 @@
-package eddleven.io.moneygement.ui.slideshow;
+package eddleven.io.moneygement.ui.pengeluaran;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class SlideshowViewModel extends ViewModel {
+public class PengeluaranViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public SlideshowViewModel() {
+    public PengeluaranViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is slideshow fragment");
+        mText.setValue("This is pengeluaran fragment");
     }
 
     public LiveData<String> getText() {
