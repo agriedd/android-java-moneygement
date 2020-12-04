@@ -60,8 +60,10 @@ public class PemasukanAdapter extends RecyclerView.Adapter<PemasukanAdapter.view
     @Override
     public viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
-        if(viewType == 0){
+        if(viewType == 2){
             view = LayoutInflater.from(this.context).inflate(R.layout.list_item_pemasukan, parent, false);
+        } else if(viewType == 3){
+            view = LayoutInflater.from(this.context).inflate(R.layout.list_item_pemasukan_hutang, parent, false);
         } else {
             view = LayoutInflater.from(this.context).inflate(R.layout.message_from_bottom, parent, false);
         }
@@ -70,14 +72,16 @@ public class PemasukanAdapter extends RecyclerView.Adapter<PemasukanAdapter.view
 
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
-        if(this.getItemViewType(position) == 0){
+        if(this.getItemViewType(position) == 2){
             holder.bind(position, this.pemasukanList.get(position));
+        } else if(this.getItemViewType(position) == 3){
+            holder.bindHutang(position, this.pemasukanList.get(position));
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        return position == this.getItemCount() - 1 ? 1 : 0;
+        return position == this.getItemCount() - 1 ? 1 : pemasukanList.get(position).getJenis() + 2;
     }
 
     @Override
@@ -106,6 +110,17 @@ public class PemasukanAdapter extends RecyclerView.Adapter<PemasukanAdapter.view
         }
 
         public void bind(int position, Pemasukan pemasukan) {
+            this.pemasukan = pemasukan;
+            itemView.setOnCreateContextMenuListener(this);
+            FloatingActionButton color = itemView.findViewById(R.id.item_kategori_color);
+            TextView title = itemView.findViewById(R.id.item_nominal);
+            TextView subtitle = itemView.findViewById(R.id.item_subtitle);
+            TextView date = itemView.findViewById(R.id.item_date);
+            title.setText("Rp." + pemasukan.getNominal() + ",-");
+            subtitle.setText(pemasukan.getKeterangan().toString());
+            date.setText("Tanggal: " + pemasukan.getTanggal().toString());
+        }
+        public void bindHutang(int position, Pemasukan pemasukan) {
             this.pemasukan = pemasukan;
             itemView.setOnCreateContextMenuListener(this);
             FloatingActionButton color = itemView.findViewById(R.id.item_kategori_color);

@@ -16,5 +16,9 @@
             android:id="@+id/nav_pengeluaran"
             android:icon="@drawable/ic_baseline_arrow_downward_24"
             android:title="@string/menu_pengeluaran" />
+        <item
+            android:id="@+id/nav_hutang"
+            android:icon="@drawable/ic_baseline_assignment_returned_24"
+            android:title="@string/menu_hutang" />
     </group>
 </menu>

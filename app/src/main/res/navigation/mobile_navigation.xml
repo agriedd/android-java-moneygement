@@ -22,4 +22,11 @@
         android:name="eddleven.io.moneygement.ui.pengeluaran.PengeluaranFragment"
         android:label="@string/menu_pengeluaran"
         tools:layout="@layout/fragment_pengeluaran" />
+
+    <fragment
+        android:id="@+id/nav_hutang"
+        android:name="eddleven.io.moneygement.ui.hutang.HutangFragment"
+        android:label="@string/menu_hutang"
+        tools:layout="@layout/fragment_hutang" />
+
 </navigation>
