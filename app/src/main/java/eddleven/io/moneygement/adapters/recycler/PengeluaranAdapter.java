@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import eddleven.io.moneygement.App;
 import eddleven.io.moneygement.R;
 import eddleven.io.moneygement.dialogs.UbahPemasukanDialog;
+import eddleven.io.moneygement.dialogs.UbahPengeluaranDialog;
 import eddleven.io.moneygement.models.DaoSession;
 import eddleven.io.moneygement.models.Pemasukan;
 import eddleven.io.moneygement.models.PemasukanDao;
@@ -123,20 +124,20 @@ public class PengeluaranAdapter extends RecyclerView.Adapter<PengeluaranAdapter.
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             if(item.getGroupId() == 0){
-//                DialogFragment newFragment = new UbahPemasukanDialog(pemasukan.getId(), new UbahPemasukanDialog.UbahPemasukanInterface() {
-//                    @Override
-//                    public void setIntent(Intent intent) {
-//                        if(intent.getBooleanExtra("status", false)){
-//                            Toast.makeText(context, "Berhasil Menyimpan Pemasukan!", Toast.LENGTH_SHORT).show();
-//                            updateEvent.update();
-//                        } else {
-//                            Toast.makeText(context, "Gagal Menyimpan Pemasukan!", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
-//                newFragment.setCancelable(false);
-//                FragmentActivity activity = (FragmentActivity) context;
-//                newFragment.show(activity.getSupportFragmentManager(), "ubahpengeluaran");
+                DialogFragment newFragment = new UbahPengeluaranDialog(pengeluaran.getId(), new UbahPengeluaranDialog.UbahPengeluaranInterface() {
+                    @Override
+                    public void setIntent(Intent intent) {
+                        if(intent.getBooleanExtra("status", false)){
+                            Toast.makeText(context, "Berhasil Menyimpan Pengeluaran!", Toast.LENGTH_SHORT).show();
+                            updateEvent.update();
+                        } else {
+                            Toast.makeText(context, "Gagal Menyimpan Pengeluaran!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                newFragment.setCancelable(false);
+                FragmentActivity activity = (FragmentActivity) context;
+                newFragment.show(activity.getSupportFragmentManager(), "ubahpengeluaran");
             } else {
                 FragmentActivity activity = (FragmentActivity) context;
                 DaoSession daoSession = ((App) activity.getApplication()).getDaoSession();

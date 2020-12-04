@@ -7,7 +7,12 @@ import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.NotNull;
 
 import java.util.Date;
+import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.OrderBy;
+import org.greenrobot.greendao.annotation.ToMany;
+import org.greenrobot.greendao.annotation.ToOne;
 
 @Entity(indexes = {
         @Index(value = "id_kategori, tanggal DESC")
@@ -22,6 +27,16 @@ public class Pengeluaran {
 
     private String keterangan;
     private Long id_kategori;
+    private Long id_piutang;
+    private Integer jenis;
+
+    @ToOne( joinProperty = "id_piutang")
+    private Piutang piutang;
+
+    @ToMany( referencedJoinProperty = "id_pengeluaran" )
+    @OrderBy( "tanggal DESC" )
+    private List<BayarHutang> bayarHutangs;
+
 @Generated(hash = 126411035)
 public Pengeluaran(Long id, @NotNull Date tanggal, Integer nominal,
         String keterangan, Long id_kategori) {
