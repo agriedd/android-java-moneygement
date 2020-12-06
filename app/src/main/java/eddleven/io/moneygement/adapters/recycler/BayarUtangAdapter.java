@@ -1,6 +1,5 @@
 package eddleven.io.moneygement.adapters.recycler;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,40 +23,36 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import eddleven.io.moneygement.App;
-import eddleven.io.moneygement.HutangActivity;
 import eddleven.io.moneygement.R;
 import eddleven.io.moneygement.dialogs.UbahPengeluaranDialog;
+import eddleven.io.moneygement.models.BayarHutang;
 import eddleven.io.moneygement.models.DaoSession;
-import eddleven.io.moneygement.models.Hutang;
-import eddleven.io.moneygement.models.Pemasukan;
 import eddleven.io.moneygement.models.Pengeluaran;
 import eddleven.io.moneygement.models.PengeluaranDao;
 import eddleven.io.moneygement.repo.BayarHutangRepo;
-import eddleven.io.moneygement.repo.HutangRepo;
-import eddleven.io.moneygement.repo.PemasukanRepo;
+import eddleven.io.moneygement.repo.PengeluaranRepo;
 
-public class HutangAdapter extends RecyclerView.Adapter<HutangAdapter.viewHolder> {
+public class BayarUtangAdapter extends RecyclerView.Adapter<BayarUtangAdapter.viewHolder> {
 
     private Context context;
-    private List<Hutang> hutangList;
+    private List<BayarHutang> pengeluaranList;
     private UpdateEvent updateEvent;
     public interface UpdateEvent{
         public void update();
-        public void openActivity(long id);
     }
 
-    public HutangAdapter(Context context, List<Hutang> hutangList, UpdateEvent updateEvent) {
+    public BayarUtangAdapter(Context context, List<BayarHutang> pengeluaranList, UpdateEvent updateEvent) {
         this.context = context;
-        this.setList(hutangList);
+        this.setList(pengeluaranList);
         this.updateEvent = updateEvent;
     }
 
-    public void setList(List<Hutang> pengeluaranList) {
+    public void setList(List<BayarHutang> pengeluaranList) {
         if(pengeluaranList.size() >= 1){
-            Hutang pengeluaran = new Hutang();
+            BayarHutang pengeluaran = new BayarHutang();
             pengeluaranList.add(pengeluaran);
         }
-        this.hutangList = pengeluaranList;
+        this.pengeluaranList = pengeluaranList;
     }
 
     @NonNull
@@ -66,7 +60,7 @@ public class HutangAdapter extends RecyclerView.Adapter<HutangAdapter.viewHolder
     public viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         if(viewType == 0){
-            view = LayoutInflater.from(this.context).inflate(R.layout.list_item_hutang, parent, false);
+            view = LayoutInflater.from(this.context).inflate(R.layout.list_item_pengeluaran, parent, false);
         } else {
             view = LayoutInflater.from(this.context).inflate(R.layout.message_from_bottom, parent, false);
         }
@@ -76,7 +70,7 @@ public class HutangAdapter extends RecyclerView.Adapter<HutangAdapter.viewHolder
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
         if(this.getItemViewType(position) == 0){
-            holder.bind(position, this.hutangList.get(position));
+            holder.bind(position, this.pengeluaranList.get(position));
         }
     }
 
@@ -87,11 +81,11 @@ public class HutangAdapter extends RecyclerView.Adapter<HutangAdapter.viewHolder
 
     @Override
     public int getItemCount() {
-        return this.hutangList.size();
+        return this.pengeluaranList.size();
     }
 
-    public void updateList(List<Hutang> hutangList) {
-        this.setList(hutangList);
+    public void updateList(List<BayarHutang> listPemasukan) {
+        this.setList(listPemasukan);
         this.notifyDataSetChanged();
     }
 
@@ -99,11 +93,10 @@ public class HutangAdapter extends RecyclerView.Adapter<HutangAdapter.viewHolder
         this.updateEvent = updateEvent;
     }
 
-    public static class viewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener, View.OnClickListener {
-        private Hutang hutang;
+    public static class viewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
+        private BayarHutang pengeluaran;
         private Context context;
         public UpdateEvent updateEvent = null;
-        public Boolean lunas = false;
 
         public viewHolder(@NonNull View itemView, Context context, @NotNull UpdateEvent updateEvent) {
             super(itemView);
@@ -111,70 +104,38 @@ public class HutangAdapter extends RecyclerView.Adapter<HutangAdapter.viewHolder
             this.updateEvent = updateEvent;
         }
 
-        @SuppressLint("ResourceAsColor")
-        public void bind(int position, Hutang hutang) {
-            this.hutang = hutang;
+        public void bind(int position, BayarHutang pengeluaran) {
+            this.pengeluaran = pengeluaran;
             itemView.setOnCreateContextMenuListener(this);
             FloatingActionButton color = itemView.findViewById(R.id.item_kategori_color);
             TextView title = itemView.findViewById(R.id.item_nominal);
             TextView subtitle = itemView.findViewById(R.id.item_subtitle);
             TextView date = itemView.findViewById(R.id.item_date);
-            TextView date_expired = itemView.findViewById(R.id.item_date_expired);
-            TextView lunas = itemView.findViewById(R.id.item_lunas);
-            LinearLayout container = itemView.findViewById(R.id.item_container);
-
-
-            title.setText("Rp." + hutang.getNominal() + ",-");
-            subtitle.setText(hutang.getKeterangan().toString());
-            date.setText("Tanggal: " + hutang.getTanggal().toString());
-            date_expired.setText("Tenggat: " + hutang.getTanggal_lunas().toString());
-
-            long bayar_hutang = BayarHutangRepo.getTotalNominalByHutang(((Activity) context).getApplication(), hutang.getId());
-            if(bayar_hutang >= hutang.getNominal()){
-                this.lunas = true;
-                title.setTextColor(context.getResources().getColor(R.color.colorAccent));
-            }
-            if(this.hutang.getStatus().equals(0)){
-                container.setOnClickListener(this);
-            }
-
-            lunas.setText("Rp." + bayar_hutang + ",- /");
+            title.setText("Rp." + pengeluaran.getNominal() + ",-");
+            subtitle.setText(pengeluaran.getKeterangan().toString());
+            date.setText("Tanggal: " + pengeluaran.getTanggal().toString());
         }
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle("Aksi untuk Item #" + hutang.getId());
-            if(lunas){
-                menu.add(0, v.getId(), 0, "Atur Lunas").setOnMenuItemClickListener(this);
-            }
+            menu.setHeaderTitle("Aksi untuk Item #" + pengeluaran.getId());
             menu.add(1, v.getId(), 0, "Hapus").setOnMenuItemClickListener(this);
         }
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             if(item.getGroupId() == 0){
-                DaoSession daoSession = ((App) ((Activity) context).getApplication()).getDaoSession();
-                hutang.setStatus(1);
-                daoSession.update(hutang);
 
-                Toast.makeText(context, "Berhasil!", Toast.LENGTH_SHORT).show();
             } else {
-                FragmentActivity activity = (FragmentActivity) context;
-                long id = hutang.getId();
+                Activity activity = (Activity) context;
 
-                PemasukanRepo.deleteByHutang(activity.getApplication(), id);
+                PengeluaranRepo.deleteByHutang(activity.getApplication(), pengeluaran.getId_hutang());
+                BayarHutangRepo.delete(activity.getApplication(), pengeluaran.getId());
 
-                //hapus hutang repo
-                HutangRepo.delete(activity.getApplication(), id);
                 Toast.makeText(context, "Data berhasil dihapus!", Toast.LENGTH_SHORT).show();
+                updateEvent.update();
             }
-            updateEvent.update();
             return true;
-        }
-
-        @Override
-        public void onClick(View v) {
-            updateEvent.openActivity(hutang.getId());
         }
     }
 }

@@ -1,15 +1,20 @@
 package eddleven.io.moneygement;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -18,7 +23,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import eddleven.io.moneygement.configs.Preference;
 
-public class ActivityUtama extends AppCompatActivity {
+public class ActivityUtama extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -26,11 +31,18 @@ public class ActivityUtama extends AppCompatActivity {
     private final Handler mHandlerBackPressed = new Handler();
     private LinearLayout container;
     private NavigationView navigationView;
+    private BottomNavigationView bottomNavigationView;
+    private DrawerLayout drawer;
+    public NavController navController;
+    public ActivityUtama() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_utama);
+        bottomNavigationView = findViewById(R.id.bottomNav);
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
 //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 //        FloatingActionButton fab = findViewById(R.id.fab);
@@ -41,7 +53,7 @@ public class ActivityUtama extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
-        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername = headerView.findViewById(R.id.user_name);
@@ -53,9 +65,10 @@ public class ActivityUtama extends AppCompatActivity {
 //                R.id.nav_home, R.id.nav_pemasukan, R.id.nav_pengeluaran)
 //                .setDrawerLayout(drawer)
 //                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 //        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
 
         this.container = findViewById(R.id.container_activity_utama);
         drawer.setScrimColor(getResources().getColor(R.color.transparent));
@@ -107,5 +120,17 @@ public class ActivityUtama extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @SuppressLint("WrongConstant")
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.drawer_menu){
+            drawer.openDrawer(Gravity.START);
+        } else {
+            navigationView.setCheckedItem(R.id.nav_home);
+            navController.navigate(R.id.nav_home);
+        }
+        return true;
     }
 }

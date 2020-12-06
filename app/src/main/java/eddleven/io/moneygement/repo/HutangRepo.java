@@ -43,14 +43,14 @@ public class HutangRepo {
     public static long getTotalNominal(Application application){
         DaoSession daoSession = getDB(application);
         HutangDao hutangDao = daoSession.getHutangDao();
-        Cursor cursor = hutangDao.getDatabase().rawQuery("SELECT SUM(`nominal`) as total FROM " + hutangDao.TABLENAME, new String[]{});
+        Cursor cursor = hutangDao.getDatabase().rawQuery("SELECT SUM(`nominal`) as total FROM " + hutangDao.TABLENAME + " WHERE " + HutangDao.Properties.Status.columnName + " = " + 0, new String[]{});
         cursor.moveToFirst();
         return cursor.getLong(0);
     }
     public static long getTotalNominalMonth(Application application){
         DaoSession daoSession = getDB(application);
         HutangDao hutangDao = daoSession.getHutangDao();
-        Cursor cursor = hutangDao.getDatabase().rawQuery("SELECT SUM(`nominal`) as total FROM " + hutangDao.TABLENAME + " WHERE strftime('%Y', datetime(tanggal/1000, 'unixepoch')) = strftime('%Y',date('now')) AND strftime('%m', datetime(tanggal/1000, 'unixepoch')) = strftime('%m',date('now'))", new String[]{});
+        Cursor cursor = hutangDao.getDatabase().rawQuery("SELECT SUM(`nominal`) as total FROM " + hutangDao.TABLENAME + " WHERE strftime('%Y', datetime(tanggal/1000, 'unixepoch')) = strftime('%Y',date('now')) AND strftime('%m', datetime(tanggal/1000, 'unixepoch')) = strftime('%m',date('now'))" + " AND " + HutangDao.Properties.Status.columnName + " = " + 0, new String[]{});
         cursor.moveToFirst();
 
         return cursor.getLong(0);

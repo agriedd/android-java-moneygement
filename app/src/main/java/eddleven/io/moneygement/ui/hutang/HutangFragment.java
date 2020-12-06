@@ -37,6 +37,7 @@ import eddleven.io.moneygement.models.Hutang;
 import eddleven.io.moneygement.models.HutangDao;
 import eddleven.io.moneygement.models.Pengeluaran;
 import eddleven.io.moneygement.models.PengeluaranDao;
+import eddleven.io.moneygement.repo.HutangRepo;
 import eddleven.io.moneygement.ui.pengeluaran.PengeluaranViewModel;
 
 public class HutangFragment extends Fragment implements View.OnClickListener {
@@ -141,9 +142,7 @@ public class HutangFragment extends Fragment implements View.OnClickListener {
         cursor.moveToFirst();
         totalHutang.setText("Rp." + String.valueOf(cursor.getLong(0)) + ",-");
 
-        Cursor cursor2 = hutangDao.getDatabase().rawQuery("SELECT SUM(`nominal`) as total FROM " + hutangDao.TABLENAME + " WHERE strftime('%Y', datetime(tanggal/1000, 'unixepoch')) = strftime('%Y',date('now')) AND strftime('%m', datetime(tanggal/1000, 'unixepoch')) = strftime('%m',date('now'))", new String[]{});
-        cursor2.moveToFirst();
-        String pengeluaranBulanan = String.valueOf(cursor2.getLong(0));
+        String pengeluaranBulanan = String.valueOf(HutangRepo.getTotalNominalMonth(getActivity().getApplication()));
         String nama = Preference.getName(getContext());
         pesanHutang.setText(nama + ", Pinjaman Anda bulan ini: Rp." +  pengeluaranBulanan + ",-");
     }

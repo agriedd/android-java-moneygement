@@ -34,6 +34,16 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Rp.0,- /"
+                android:textSize="15sp"
+                android:gravity="right|center"
+                android:textStyle="bold"
+                tools:ignore="RtlHardcoded"
+                android:id="@+id/item_lunas"
+                android:textColor="@color/colorAccent"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Rp.500000"
                 android:textSize="30sp"
                 android:gravity="right|center"

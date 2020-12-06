@@ -15,9 +15,9 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:keepScreenOn="true"
-        android:text="@string/splash_title"
-        android:textColor="#33b5e5"
+        android:text="Moneygement"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="25sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
 </FrameLayout>

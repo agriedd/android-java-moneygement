@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 
+import org.greenrobot.greendao.query.DeleteQuery;
+
 import java.util.List;
 
 import androidx.fragment.app.FragmentActivity;
@@ -33,6 +35,16 @@ public class PengeluaranRepo {
     public static Pengeluaran find(Application application, long id){
         DaoSession daoSession = getDB(application);
         return daoSession.getPengeluaranDao().load(id);
+    }
+
+    public static Boolean deleteByHutang(Application application, long id){
+        DaoSession daoSession = getDB(application);
+        final DeleteQuery<Pengeluaran> tableDeleteQuery = daoSession.queryBuilder(Pengeluaran.class)
+                .where(PengeluaranDao.Properties.Id_hutang.eq(id))
+                .buildDelete();
+        tableDeleteQuery.executeDeleteWithoutDetachingEntities();
+        daoSession.clear();
+        return true;
     }
     public static long getTotalNominal(Application application){
         DaoSession daoSession = getDB(application);

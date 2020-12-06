@@ -5,10 +5,13 @@ import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 
+import org.greenrobot.greendao.query.DeleteQuery;
+
 import java.util.List;
 
 import androidx.fragment.app.FragmentActivity;
 import eddleven.io.moneygement.App;
+import eddleven.io.moneygement.models.BayarHutangDao;
 import eddleven.io.moneygement.models.DaoSession;
 import eddleven.io.moneygement.models.Pemasukan;
 import eddleven.io.moneygement.models.PemasukanDao;
@@ -33,6 +36,22 @@ public class PemasukanRepo {
     public static Pemasukan find(Application application, long id){
         DaoSession daoSession = getDB(application);
         return daoSession.getPemasukanDao().load(id);
+    }
+
+    public static Boolean delete(Application application, long id){
+        DaoSession daoSession = getDB(application);
+        PemasukanDao pemasukanDao = daoSession.getPemasukanDao();
+        pemasukanDao.deleteByKey(id);
+        return true;
+    }
+    public static Boolean deleteByHutang(Application application, long id){
+        DaoSession daoSession = getDB(application);
+        final DeleteQuery<Pemasukan> tableDeleteQuery = daoSession.queryBuilder(Pemasukan.class)
+                .where(PemasukanDao.Properties.Id_hutang.eq(id))
+                .buildDelete();
+        tableDeleteQuery.executeDeleteWithoutDetachingEntities();
+        daoSession.clear();
+        return true;
     }
 
     public static long getTotalNominal(Application application){

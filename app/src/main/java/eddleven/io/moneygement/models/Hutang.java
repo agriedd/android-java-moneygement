@@ -24,7 +24,7 @@ public class Hutang {
     @NotNull
     private Date tanggal;
     private Integer nominal;
-    private Integer status;
+    private Integer status = 0;
 
     private String keterangan;
     private Double bunga;

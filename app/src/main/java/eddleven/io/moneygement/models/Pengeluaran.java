@@ -30,6 +30,7 @@ public class Pengeluaran {
     private Long id_kategori;
     private Long id_piutang;
     private Integer jenis = 0;
+    private Long id_hutang;
 
     @ToOne( joinProperty = "id_piutang")
     private Piutang piutang;
@@ -49,9 +50,9 @@ private transient PengeluaranDao myDao;
 @Generated(hash = 1232600601)
 private transient Long piutang__resolvedKey;
 
-@Generated(hash = 791443049)
-public Pengeluaran(Long id, @NotNull Date tanggal, Integer nominal,
-        String keterangan, Long id_kategori, Long id_piutang, Integer jenis) {
+@Generated(hash = 236801833)
+public Pengeluaran(Long id, @NotNull Date tanggal, Integer nominal, String keterangan,
+        Long id_kategori, Long id_piutang, Integer jenis, Long id_hutang) {
     this.id = id;
     this.tanggal = tanggal;
     this.nominal = nominal;
@@ -59,6 +60,7 @@ public Pengeluaran(Long id, @NotNull Date tanggal, Integer nominal,
     this.id_kategori = id_kategori;
     this.id_piutang = id_piutang;
     this.jenis = jenis;
+    this.id_hutang = id_hutang;
 }
 @Generated(hash = 1034899702)
 public Pengeluaran() {
@@ -191,6 +193,12 @@ public void update() {
         throw new DaoException("Entity is detached from DAO context");
     }
     myDao.update(this);
+}
+public Long getId_hutang() {
+    return this.id_hutang;
+}
+public void setId_hutang(Long id_hutang) {
+    this.id_hutang = id_hutang;
 }
 /** called by internal mechanisms, do not call yourself. */
 @Generated(hash = 803416777)
